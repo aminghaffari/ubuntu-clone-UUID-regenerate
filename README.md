@@ -17,4 +17,5 @@ Useful for VMware, Proxmox, VirtualBox, KVM and other virtualization platforms.
 # How to run fix-clone.sh #
 
 chmod +x clone-fix.sh
+
 sudo ./clone-fix.sh
