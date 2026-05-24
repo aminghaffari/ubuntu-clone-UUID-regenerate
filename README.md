@@ -1,5 +1,4 @@
-# ubuntu-clone-UUID-regenerate
-Linux VM post-clone initialization toolkit
+# Linux VM post-clone initialization toolkit
 
 A small utility/checklist for preparing cloned Linux machines before putting them into production.
 
