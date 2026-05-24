@@ -1,0 +1,94 @@
+# Linux Clone Post-Setup Checklist
+
+After cloning a Linux machine, several system identifiers should be regenerated to avoid conflicts with other cloned VMs on the network, DHCP, monitoring systems, clusters, or SSH.
+
+## Important Items to Change
+
+* Hostname
+* Machine ID
+* SSH host keys
+* Network interface MAC address
+* Static IP address (if configured)
+* Service UUIDs (depending on the environment)
+
+---
+
+## Change Hostname
+
+```bash
+sudo hostnamectl set-hostname NEW-HOSTNAME
+```
+
+---
+
+## Regenerate Machine ID
+
+Important for systemd, D-Bus, and some management tools.
+
+```bash
+sudo truncate -s 0 /etc/machine-id
+sudo rm -f /var/lib/dbus/machine-id
+sudo systemd-machine-id-setup
+```
+
+---
+
+## Regenerate SSH Host Keys
+
+Otherwise all cloned machines will share the same SSH fingerprint.
+
+```bash
+sudo rm -f /etc/ssh/ssh_host_*
+sudo dpkg-reconfigure openssh-server
+```
+
+---
+
+## Change MAC Address
+
+If you are using VMware, Proxmox, VirtualBox, or another hypervisor, assign a new MAC address from the VM settings.
+
+This is important to avoid DHCP and ARP conflicts.
+
+---
+
+## Update Static Network Configuration
+
+If the system uses a static IP address, update the network configuration accordingly.
+
+Example for Ubuntu Netplan:
+
+```bash
+sudo nano /etc/netplan/*.yaml
+sudo netplan apply
+```
+
+---
+
+## Remove Old DHCP Leases (Optional)
+
+```bash
+sudo rm -f /var/lib/dhcp/*
+```
+
+---
+
+## Cloud-Init Cleanup
+
+If cloud-init is installed, it may restore previous hostname or network settings.
+
+```bash
+sudo cloud-init clean
+```
+
+---
+
+## Recommended Template Preparation
+
+Before creating a VM template:
+
+* Clear machine-id
+* Remove SSH host keys
+* Install and configure cloud-init
+
+This allows every cloned VM to generate unique identifiers automatically during first boot.
